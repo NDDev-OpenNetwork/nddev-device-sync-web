@@ -166,7 +166,7 @@ packages:
       path: "packages/flutter"
       ref: b9e989b14e7196d7292c20847869fa92964bec21
       resolved-ref: b9e989b14e7196d7292c20847869fa92964bec21
-      url: "https://github.com/NDDev-OpenNetwork/nddev-opennetwork-design-system.git"
+      url: "https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-opennetwork-design-system.git"
     source: git
     version: "0.0.1-alpha.8"
   nds_native:
@@ -175,7 +175,7 @@ packages:
       path: "packages/nds_native"
       ref: "10116cd34459692887c9b707b26651453007808d"
       resolved-ref: "10116cd34459692887c9b707b26651453007808d"
-      url: "https://github.com/NDDev-OpenNetwork/nddev-device-sync-desktop.git"
+      url: "https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-desktop.git"
     source: git
     version: "0.0.1-alpha.19"
   nds_ui:
@@ -184,7 +184,7 @@ packages:
       path: "packages/nds_ui"
       ref: "10116cd34459692887c9b707b26651453007808d"
       resolved-ref: "10116cd34459692887c9b707b26651453007808d"
-      url: "https://github.com/NDDev-OpenNetwork/nddev-device-sync-desktop.git"
+      url: "https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-desktop.git"
     source: git
     version: "0.0.1-alpha.19"
   path:
