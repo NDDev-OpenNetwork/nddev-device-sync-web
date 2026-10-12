@@ -1,0 +1,41 @@
+name: NDS checks
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.14.4'
+      - id: desktop
+        run: python scripts/desktop-source.py
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          repository: NDDev-OpenNetwork/nddev-device-sync-desktop
+          ref: ${{ steps.desktop.outputs.sha }}
+          path: vendor/desktop
+          persist-credentials: false
+      - run: python vendor/desktop/scripts/bootstrap-ci.py
+      - run: rustup toolchain install 1.99.0 --profile minimal --component clippy --target wasm32-unknown-unknown
+      - run: cargo +1.99.0 install wasm-bindgen-cli --version 0.2.129 --locked
+      - run: flutter pub get --enforce-lockfile
+      - run: dart format --output=none --set-exit-if-changed lib
+      - run: flutter analyze --no-pub
+      - run: node --check scripts/offline-worker.js
+      - run: node --check web/nds-bootstrap.js
+      - run: python scripts/build.py
+      - run: python scripts/check-artifact.py build/web
