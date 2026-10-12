@@ -68,6 +68,10 @@ def main():
     bindgen = next(p for p in metadata['packages'] if p['name'] == 'wasm-bindgen')['version']
     if run('wasm-bindgen', '--version', capture_output=True).stdout.strip() != 'wasm-bindgen ' + bindgen:
         raise ValueError('wasm-bindgen CLI must match Cargo.lock')
+    # wasm-bindgen leaves superseded snippet directories in an existing output.
+    # This directory is entirely generated; ship only this build's imports.
+    if (output / 'pkg').exists():
+        shutil.rmtree(output / 'pkg')
     run('wasm-bindgen', '--target', 'web', '--no-typescript', '--out-dir', str(output / 'pkg'),
         '--out-name', 'nds_native', str(Path(metadata['target_directory']) / ('wasm32-unknown-unknown/' + ('debug' if args.development_http else 'release') + '/nds_native.wasm')))
     vault = next(p for p in metadata['packages'] if p['name'] == 'nddev-device-sync-vault')
