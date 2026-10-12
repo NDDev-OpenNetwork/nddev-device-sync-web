@@ -7,3 +7,7 @@ check:
 
 build:
     python3 scripts/build.py
+
+worker-check:
+    npm ci --ignore-scripts
+    npm test

@@ -10,6 +10,13 @@ Use Flutter 3.47.7 / Dart 3.13.5, Rust 1.99.0 with the
 `wasm32-unknown-unknown` target, and the `wasm-bindgen` CLI version recorded in the
 shared Rust lockfile. Run `just check` and `just build`.
 
+The worker acceptance uses Node 24.21.0 and locked Playwright. Run
+`npm ci --ignore-scripts`, then `npx playwright install chromium` and
+`just worker-check`.
+An existing Chromium executable can be selected with `NDS_TEST_CHROMIUM`. The
+test owns an isolated browser context and loopback server; it exercises actual
+updates, offline navigation, cache integrity, repair limits and timeouts.
+
 The artifact is `build/web`. The NDS server verifies every file in
 `nds-assets.json` before serving it from `NDS_WEB_ROOT`. Serve the application
 and API at one HTTPS origin; no endpoint, bearer token or deployment secret is
@@ -17,8 +24,11 @@ embedded in the bundle. A `--development-http` build uses Rust's debug profile
 and the existing loopback-only development feature for isolated acceptance.
 
 The app shell caches only manifest-verified assets. Updates wait for old app
-windows to close; an active client is never forcibly reloaded. Flutter assets,
-fonts and Rust/WASM are self-hosted under the server's CSP.
+windows to close; an active client is never forcibly reloaded. Failed updates
+preserve the previous waiting build too. Retention is bounded to three static
+caches; each installation prunes older unreferenced builds. Activation preserves
+a concurrent installation. Flutter assets, fonts and Rust/WASM are self-hosted
+under the server's CSP.
 
 ## Offline boundary
 
