@@ -1,6 +1,7 @@
 // BUILD and ASSETS are generated from the finished, self-hosted artifact.
 const CACHE = 'nds-shell-' + BUILD;
-const paths = new Set(ASSETS.map(asset => '/' + asset.path));
+const paths = new Map(ASSETS.map(asset => ['/' + asset.path, asset]));
+const repairs = new Map();
 const ownedCache = /^nds-shell-[a-f0-9]{64}$/;
 self.addEventListener('message', event => {
   if (event.data?.type === 'nds-shell-build' && event.ports.length === 1) {
@@ -23,6 +24,37 @@ async function activeCache() {
     active.postMessage({type: 'nds-shell-build'}, [channel.port2]);
   });
 }
+async function verifiedAsset(path, asset) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20000);
+  try {
+    const response = await fetch(path, {cache: 'no-store', credentials: 'omit', redirect: 'error', signal: controller.signal});
+    if (!response.ok || response.type === 'opaque' || !response.body) throw new Error('asset_unavailable');
+    const reader = response.body.getReader();
+    const chunks = [];
+    let length = 0;
+    try {
+      while (true) {
+        const {done, value} = await reader.read();
+        if (done) break;
+        length += value.byteLength;
+        if (length > asset.bytes) {await reader.cancel(); throw new Error('asset_invalid');}
+        chunks.push(value);
+      }
+    } finally {reader.releaseLock();}
+    if (length !== asset.bytes) throw new Error('asset_invalid');
+    const bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const chunk of chunks) {bytes.set(chunk, offset); offset += chunk.length;}
+    const digest = await crypto.subtle.digest('SHA-256', bytes);
+    const hash = [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+    if (hash !== asset.sha256) throw new Error('asset_invalid');
+    const headers = new Headers(response.headers);
+    // Fetch has already decoded any content encoding.
+    headers.delete('content-encoding');headers.delete('content-length');
+    return new Response(bytes, {status: response.status, headers});
+  } finally {clearTimeout(timer);}
+}
 self.addEventListener('install', event => event.waitUntil((async () => {
   const retained = await activeCache();
   // A worker-only change has a different BUILD. Never write/delete the cache
@@ -37,13 +69,7 @@ self.addEventListener('install', event => event.waitUntil((async () => {
   try {
     for (const asset of ASSETS) {
       const path = '/' + asset.path;
-      const response = await fetch(path, {cache: 'no-store', credentials: 'omit', redirect: 'error'});
-      if (!response.ok || response.type === 'opaque') throw new Error('asset_unavailable');
-      const bytes = await response.clone().arrayBuffer();
-      if (bytes.byteLength !== asset.bytes) throw new Error('asset_invalid');
-      const digest = await crypto.subtle.digest('SHA-256', bytes);
-      const hash = [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
-      if (hash !== asset.sha256) throw new Error('asset_invalid');
+      const response = await verifiedAsset(path, asset);
       await cache.put(path, response);
     }
   } catch (error) {
@@ -63,9 +89,25 @@ self.addEventListener('fetch', event => {
   const path = url.pathname === '/' ? '/index.html' : url.pathname;
   if (event.request.method !== 'GET' || url.origin !== self.location.origin || url.search || !paths.has(path)) return;
   event.respondWith((async () => {
-    const response = await (await caches.open(CACHE)).match(path);
-    // An evicted asset cannot safely be mixed with a newer deployment. Report
-    // failure and let the next installation repair the complete version.
-    return response || new Response(null, {status: 503});
+    const cache = await caches.open(CACHE);
+    const response = await cache.match(path);
+    if (response) return response;
+    // Repair only the exact current build. A different deployment cannot be
+    // mixed into this client, and failure never deletes its operational data.
+    try {
+      let pending = repairs.get(path);
+      if (!pending) {
+        if (repairs.size >= 16) throw new Error('asset_busy');
+        pending = (async () => {
+          try {
+            const restored = await verifiedAsset(path, paths.get(path));
+            await cache.put(path, restored.clone());
+            return restored;
+          } finally {repairs.delete(path);}
+        })();
+        repairs.set(path, pending);
+      }
+      return (await pending).clone();
+    } catch {return new Response(null, {status: 503});}
   })());
 });
