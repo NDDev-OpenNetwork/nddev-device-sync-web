@@ -9,19 +9,18 @@ self.addEventListener('message', event => {
     event.ports[0].close();
   }
 });
-async function activeCache() {
-  const active = self.registration.active;
-  if (!active) return null;
+async function workerCache(worker) {
+  if (!worker) return null;
   return new Promise((resolve, reject) => {
     const channel = new MessageChannel();
-    const timer = setTimeout(() => {channel.port1.close(); reject(new Error('active_build_unavailable'));}, 2000);
+    const timer = setTimeout(() => {channel.port1.close(); reject(new Error('shell_build_unavailable'));}, 2000);
     channel.port1.onmessage = ({data}) => {
       clearTimeout(timer);
       channel.port1.close();
-      if (!/^[a-f0-9]{64}$/.test(data?.build)) reject(new Error('active_build_invalid'));
+      if (!/^[a-f0-9]{64}$/.test(data?.build)) reject(new Error('shell_build_invalid'));
       else resolve('nds-shell-' + data.build);
     };
-    active.postMessage({type: 'nds-shell-build'}, [channel.port2]);
+    worker.postMessage({type: 'nds-shell-build'}, [channel.port2]);
   });
 }
 async function verifiedAsset(path, asset) {
@@ -56,14 +55,17 @@ async function verifiedAsset(path, asset) {
   } finally {clearTimeout(timer);}
 }
 self.addEventListener('install', event => event.waitUntil((async () => {
-  const retained = await activeCache();
+  const retained = new Set(await Promise.all([
+    workerCache(self.registration.active), workerCache(self.registration.waiting),
+  ]));
   // A worker-only change has a different BUILD. Never write/delete the cache
   // serving a live client, even if installation subsequently fails.
-  if (retained === CACHE) return;
-  // Bound retention to the active build and this candidate. Superseded waiting
-  // workers have no clients; old active data is never pruned during install.
+  if (retained.has(CACHE)) return;
+  // A failed installation leaves the previous waiting worker registered. Its
+  // verified cache must survive until activation too. Retain at most the
+  // active, waiting and candidate caches. The next install prunes stale builds.
   for (const key of await caches.keys()) {
-    if (ownedCache.test(key) && key !== retained && key !== CACHE) await caches.delete(key);
+    if (ownedCache.test(key) && !retained.has(key) && key !== CACHE) await caches.delete(key);
   }
   const cache = await caches.open(CACHE);
   try {
@@ -77,13 +79,10 @@ self.addEventListener('install', event => event.waitUntil((async () => {
     throw error;
   }
 })()));
-self.addEventListener('activate', event => event.waitUntil((async () => {
-  // No skipWaiting: an update cannot mix new assets into an active old client.
-  for (const key of await caches.keys()) {
-    if (ownedCache.test(key) && key !== CACHE) await caches.delete(key);
-  }
-  await self.clients.claim();
-})()));
+// No skipWaiting: an update cannot mix new assets into an active old client.
+// Activation can overlap the next installation when the last client closes.
+// Installation owns cache pruning; activation must not delete its candidate.
+self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   const path = url.pathname === '/' ? '/index.html' : url.pathname;

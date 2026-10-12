@@ -21,6 +21,13 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.14.4'
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.21.0'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
       - id: desktop
         run: python scripts/desktop-source.py
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
