@@ -1,0 +1,13 @@
+{
+  "name": "nds-browser-acceptance",
+  "private": true,
+  "scripts": {
+    "test": "node --test scripts/offline-worker.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.0"
+  },
+  "engines": {
+    "node": "24.21.0"
+  }
+}
