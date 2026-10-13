@@ -1,0 +1,50 @@
+schema_version: 1
+repository:
+  id: repo_01M4ST4345P94BGWPGGED1G6CA
+  display_name: nddev-device-sync-web
+  roles:
+  - project
+  lifecycle: active
+provider:
+  type: github
+  installation: installation:github-nddev-technocracy-opennetwork-nds
+  repository_id: 1415869300
+  owner: NDDev-Technocracy-OpenNetwork-NDS
+  name: nddev-device-sync-web
+classification:
+  portfolios:
+  - portfolio:nddev-technocracy-opennetwork-nds
+  visibility_contract: public
+  data_classification: public
+product:
+  purpose: NDS browser assembly reusing shared Flutter presentation and the Rust bridge,
+    with an immutable verified offline app-shell artifact.
+  capabilities:
+  - Assemble the shared NDS browser client
+  - Build and verify bounded same-origin offline app-shell assets
+  entrypoints:
+  - change: Browser assembly and work contract
+    path: AGENTS.md
+  - change: Artifact build and verification
+    path: scripts
+  - change: Browser app shell
+    path: web
+policy:
+  profiles:
+  - repository-default
+  - organization-default
+  rollout_ring: standard
+git:
+  default_branch: main
+  integration: pull-request
+  branch_model: task-branches
+  handoff_pr: preferred
+  cleanup: merged-only
+agent:
+  context_profile: project-default
+  generated_agents: false
+  serena:
+    enabled: false
+    provenance_required: false
+release:
+  mode: none
