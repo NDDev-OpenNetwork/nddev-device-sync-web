@@ -1,6 +1,6 @@
 name: nddev_device_sync_web
 description: NDDev OpenNetwork NDS offline browser client.
-version: 0.0.1-alpha.3+3
+version: 0.0.1-alpha.4+4
 publish_to: none
 environment:
   sdk: ">=3.13.0 <4.0.0"
@@ -11,7 +11,7 @@ dependencies:
   nds_ui:
     git:
       url: https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-desktop.git
-      ref: f0dfcae8fd80fdfc6e5ce7cce6426f5b8c9c8a3c
+      ref: e01d1f8972a3fa7a3f1328e24870b2f63f866972
       path: packages/nds_ui
 dev_dependencies:
   flutter_lints: ^6.0.0
