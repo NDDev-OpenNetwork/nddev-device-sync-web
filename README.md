@@ -6,11 +6,11 @@ own Rust modules. JavaScript supplies browser I/O and static asset loading.
 
 ## Build
 
-Use Flutter 3.47.7 / Dart 3.13.5, Rust 1.99.0 with the
+Use the Flutter/Dart pins from Shared and `rust-toolchain.toml` with the
 `wasm32-unknown-unknown` target, and the `wasm-bindgen` CLI version recorded in the
 shared Rust lockfile. Run `just check` and `just build`.
 
-The worker acceptance uses Node 24.21.0 and locked Playwright. Run
+The worker acceptance uses the Node and Playwright versions pinned in `package.json`. Run
 `npm ci --ignore-scripts`, then `npx playwright install chromium` and
 `just worker-check`.
 An existing Chromium executable can be selected with `NDS_TEST_CHROMIUM`. The

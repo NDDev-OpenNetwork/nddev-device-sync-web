@@ -6,7 +6,7 @@ repository. Reuse those packages; domain, identity, vault and sync rules remain
 in their Rust owners. Browser JavaScript implements concrete browser I/O only.
 
 Read standarts.lock, module.yaml and the locked engineering/workflow contracts.
-Use Rust 1.99.0 and Flutter 3.47.7/Dart 3.13.5. Keep all assets same-origin and
+Use the compiler in rust-toolchain.toml and the Flutter/Dart pins from Shared. Keep all assets same-origin and
 CSP-compatible. Cache only manifest-verified static assets, never API responses.
 Browser secrets stay in the protected accounts adapter, never Dart DTOs or logs.
 
