@@ -53,7 +53,7 @@ def main():
     environment = build_environment(ROOT / 'build/nds-native')
     # Stable, single-threaded WASM: all bridge I/O is explicitly asynchronous.
     environment['CARGO_NET_GIT_FETCH_WITH_CLI'] = 'true'
-    environment['CARGO_TARGET_DIR'] = str(ROOT / '.dart_tool/nds-rust')
+    environment.setdefault('CARGO_TARGET_DIR', str(ROOT / '.dart_tool/nds-rust'))
     source = run('git', 'rev-parse', 'HEAD', cwd=rust, capture_output=True).stdout.strip()
     dirty = bool(run('git', 'status', '--porcelain', '--untracked-files=no', cwd=rust, capture_output=True).stdout)
     if dirty and not args.development_http:
