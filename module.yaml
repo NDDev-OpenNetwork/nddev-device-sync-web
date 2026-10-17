@@ -6,4 +6,4 @@ license: AGPL-3.0-only
 repository: NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-web
 standards_lock: standarts.lock
 platforms: [web]
-capabilities: [nds-session-ui]
+capabilities: [nds-session-ui, company-administration-ui]

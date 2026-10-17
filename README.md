@@ -49,3 +49,10 @@ shared source, browser, storage, offline/reconnect and observability evidence.
 A compile gate alone does not establish support for a browser.
 
 AGPL-3.0-only · [NDDev OpenNetwork](https://nddev.ai)
+
+Company administration and invitation verification reuse the selected Shared
+Organizations/Accounts Rust client and presentation. Administrative changes are
+online; an uncertain command can be retried without replacing its identity.
+This remains the Flutter browser migration baseline until the React replacement
+passes ADR 0010 acceptance. Invitation fragments are captured and cleared in Rust;
+there is no token in a presentation DTO or persistent invitation cache.
