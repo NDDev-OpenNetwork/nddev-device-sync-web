@@ -45,10 +45,10 @@ packages:
     dependency: transitive
     description:
       name: code_assets
-      sha256: bf394f466ba9205f1812a0433b392d6af280f155f56651eda7c18cc32ed493b8
+      sha256: "828110d598123b5ea96c00c9f3c72105bf79f8ee36c20a39b26209ade421ec57"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "2.1.0"
   collection:
     dependency: transitive
     description:
@@ -116,10 +116,10 @@ packages:
     dependency: transitive
     description:
       name: hooks
-      sha256: "9a62a50b50b769a737bc0a8ff381f333529df3ab746b2f6b02e83760231455ba"
+      sha256: eaac480a35ec0814146c2c48d96aaa829e0e44a7662c88ae84c9edf4bc35651f
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "2.2.0"
   intl:
     dependency: transitive
     description:
@@ -156,45 +156,45 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: c82594181e3312f3d0695fc95aaaf7758d75b8d4ae2bbecf223b9fd5109a059d
+      sha256: "307249ce4ff29d58a18e97f6345f539382eb9c9c29ecda628900f31de0443dd9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.18.3"
+    version: "1.19.0"
   native_toolchain_rust:
     dependency: transitive
     description:
       name: native_toolchain_rust
-      sha256: faa57d2258a3b0fd2a634054f54e4496c9fcbd971977e7d2b7e6916d56892857
+      sha256: dc8e5f20c0cb7052372bc302f075607086d86354b37199e89ec9d3d35589e519
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4+0"
+    version: "1.0.7"
   nddev_opennetwork_design_system:
     dependency: transitive
     description:
       path: "packages/flutter"
-      ref: b9e989b14e7196d7292c20847869fa92964bec21
-      resolved-ref: b9e989b14e7196d7292c20847869fa92964bec21
-      url: "https://github.com/NDDev-OpenNetwork/nddev-opennetwork-design-system.git"
+      ref: "3d1fdea194a7ab8eb1928018f21512330a79cd43"
+      resolved-ref: "3d1fdea194a7ab8eb1928018f21512330a79cd43"
+      url: "https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-opennetwork-design-system.git"
     source: git
     version: "0.0.1-alpha.8"
   nds_native:
     dependency: transitive
     description:
       path: "packages/nds_native"
-      ref: f0dfcae8fd80fdfc6e5ce7cce6426f5b8c9c8a3c
-      resolved-ref: f0dfcae8fd80fdfc6e5ce7cce6426f5b8c9c8a3c
+      ref: "7a08b82167127b48eb9fe67e72e2c71bef51498c"
+      resolved-ref: "7a08b82167127b48eb9fe67e72e2c71bef51498c"
       url: "https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-desktop.git"
     source: git
-    version: "0.0.1-alpha.21"
+    version: "0.0.1-alpha.22"
   nds_ui:
     dependency: "direct main"
     description:
       path: "packages/nds_ui"
-      ref: f0dfcae8fd80fdfc6e5ce7cce6426f5b8c9c8a3c
-      resolved-ref: f0dfcae8fd80fdfc6e5ce7cce6426f5b8c9c8a3c
+      ref: "7a08b82167127b48eb9fe67e72e2c71bef51498c"
+      resolved-ref: "7a08b82167127b48eb9fe67e72e2c71bef51498c"
       url: "https://github.com/NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-desktop.git"
     source: git
-    version: "0.0.1-alpha.21"
+    version: "0.0.1-alpha.22"
   path:
     dependency: transitive
     description:
@@ -207,10 +207,10 @@ packages:
     dependency: transitive
     description:
       name: petitparser
-      sha256: "91bd59303e9f769f108f8df05e371341b15d59e995e6806aefab827b58336675"
+      sha256: "2f1564aadb14215e478563b5406cb80729d022158c01dc50c96013c2f7eb4790"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.2"
+    version: "7.1.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -231,10 +231,10 @@ packages:
     dependency: transitive
     description:
       name: record_use
-      sha256: "2551bd8eecfe95d14ae75f6021ad0248be5c27f138c2ec12fcb52b500b3ba1ed"
+      sha256: "1cb8564af8d43b464294411db9217f5ec04891c6f22ee2c32d73ae05e88a6bd2"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.0"
+    version: "1.1.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -348,10 +348,10 @@ packages:
     dependency: transitive
     description:
       name: vector_math
-      sha256: "1d774bbdf6b72a0b12122fc1560c9c2d2a67db5a4a4cc2bd8a5c990ab20e3188"
+      sha256: "92b9910f66ed1057fd4da7b040ae7c74cafacf885bdc81be496928d5049b032d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.3"
   web:
     dependency: transitive
     description:

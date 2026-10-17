@@ -10,35 +10,37 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+env:
+  GH_TOKEN: ${{ github.token }}
 jobs:
   quality:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
-          python-version: '3.14.4'
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+          python-version: '3.15.0'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
-          node-version: '24.21.0'
+          node-version: '24.22.0'
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npx playwright install --with-deps chromium
       - run: npm test
       - id: desktop
         run: python scripts/desktop-source.py
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: NDDev-Technocracy-OpenNetwork-NDS/nddev-device-sync-desktop
           ref: ${{ steps.desktop.outputs.sha }}
           path: vendor/desktop
           persist-credentials: false
       - run: python vendor/desktop/scripts/bootstrap-ci.py
-      - run: rustup toolchain install 1.99.0 --profile minimal --component clippy --target wasm32-unknown-unknown
-      - run: cargo +1.99.0 install wasm-bindgen-cli --version 0.2.129 --locked
+      - run: rustup toolchain install 1.99.1 --profile minimal --component clippy --target wasm32-unknown-unknown
+      - run: cargo +1.99.1 install wasm-bindgen-cli --version 0.2.129 --locked
       - run: flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed lib
       - run: flutter analyze --no-pub

@@ -3,10 +3,10 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -47,10 +47,13 @@ def main():
         return Path(unquote(uri.path)) if uri.scheme == 'file' else (config_path.parent / unquote(uri.path)).resolve()
     native = package_root('nds_native')
     rust = native / 'rust'
-    environment = os.environ.copy()
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(native / 'tool'))
+    from prepare_native import build_environment
+    environment = build_environment(ROOT / 'build/nds-native')
     # Stable, single-threaded WASM: all bridge I/O is explicitly asynchronous.
     environment['CARGO_NET_GIT_FETCH_WITH_CLI'] = 'true'
-    environment['CARGO_TARGET_DIR'] = str(ROOT / '.dart_tool/nds-rust')
+    environment.setdefault('CARGO_TARGET_DIR', str(ROOT / '.dart_tool/nds-rust'))
     source = run('git', 'rev-parse', 'HEAD', cwd=rust, capture_output=True).stdout.strip()
     dirty = bool(run('git', 'status', '--porcelain', '--untracked-files=no', cwd=rust, capture_output=True).stdout)
     if dirty and not args.development_http:
@@ -93,7 +96,7 @@ def main():
     provenance = dict(schema_version=1, assembly_source_commit=assembly, shared_source_commit=environment['NDS_SOURCE_COMMIT'],
                       development_http=args.development_http, rust_target='wasm32-unknown-unknown',
                       flutter={key: flutter[key] for key in ('frameworkVersion', 'frameworkRevision', 'engineRevision', 'dartSdkVersion')},
-                      rust=run('rustc', '--version', capture_output=True).stdout.strip(),
+                      rust=run('rustc', '--version', env=environment, capture_output=True).stdout.strip(),
                       wasm_bindgen=bindgen,
                       pubspec_lock_sha256=hashlib.sha256((ROOT / 'pubspec.lock').read_bytes()).hexdigest(),
                       rust_lock_sha256=hashlib.sha256((rust / 'Cargo.lock').read_bytes()).hexdigest())

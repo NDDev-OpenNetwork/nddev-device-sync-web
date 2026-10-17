@@ -6,11 +6,11 @@ own Rust modules. JavaScript supplies browser I/O and static asset loading.
 
 ## Build
 
-Use Flutter 3.47.7 / Dart 3.13.5, Rust 1.99.0 with the
+Use the Flutter/Dart pins from Shared and `rust-toolchain.toml` with the
 `wasm32-unknown-unknown` target, and the `wasm-bindgen` CLI version recorded in the
 shared Rust lockfile. Run `just check` and `just build`.
 
-The worker acceptance uses Node 24.21.0 and locked Playwright. Run
+The worker acceptance uses the Node and Playwright versions pinned in `package.json`. Run
 `npm ci --ignore-scripts`, then `npx playwright install chromium` and
 `just worker-check`.
 An existing Chromium executable can be selected with `NDS_TEST_CHROMIUM`. The
@@ -49,3 +49,10 @@ shared source, browser, storage, offline/reconnect and observability evidence.
 A compile gate alone does not establish support for a browser.
 
 AGPL-3.0-only · [NDDev OpenNetwork](https://nddev.ai)
+
+Company administration and invitation verification reuse the selected Shared
+Organizations/Accounts Rust client and presentation. Administrative changes are
+online; an uncertain command can be retried without replacing its identity.
+This remains the Flutter browser migration baseline until the React replacement
+passes ADR 0010 acceptance. Invitation fragments are captured and cleared in Rust;
+there is no token in a presentation DTO or persistent invitation cache.
